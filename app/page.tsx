@@ -1,10 +1,10 @@
-import { EmptyState } from "@gestionresidencial/shared-ui";
 import { AuthenticatedShell } from "@/features/auth/authenticated-shell";
+import { PorteriaScreen } from "@/features/porteria/porteria-screen";
 
 export default function PorteriaPage() {
   return (
     <AuthenticatedShell>
-      <EmptyState title="Portería" description="Próximamente." />
+      <PorteriaScreen />
     </AuthenticatedShell>
   );
 }
