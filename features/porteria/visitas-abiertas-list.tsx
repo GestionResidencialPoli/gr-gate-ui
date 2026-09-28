@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Button, EmptyState, Skeleton, TextField } from "@gestionresidencial/shared-ui";
+import { Button, DOCUMENT_PATTERN, EmptyState, Skeleton, TextField } from "@gestionresidencial/shared-ui";
 import { listVisitasAbiertas, registrarSalida } from "@/lib/gate-client";
 import type { Aforo, Visita } from "@/lib/types";
 
@@ -64,6 +64,9 @@ export function VisitasAbiertasList({
           id="buscar-documento"
           name="buscar-documento"
           label="Buscar por documento"
+          maxLength={30}
+          pattern={DOCUMENT_PATTERN}
+          title="Entre 4 y 30 letras, dígitos o guiones."
           value={documento}
           onChange={(event) => setDocumento(event.currentTarget.value)}
         />
