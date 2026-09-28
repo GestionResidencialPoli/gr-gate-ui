@@ -1,11 +1,19 @@
 "use client";
 
 import { useState, type FormEvent, type KeyboardEvent } from "react";
-import { Button, Feedback, TextField } from "@gestionresidencial/shared-ui";
+import {
+  Button,
+  DOCUMENT_PATTERN,
+  Feedback,
+  PERSON_NAME_PATTERN,
+  TextField,
+  UNIT_CODE_PATTERN,
+} from "@gestionresidencial/shared-ui";
 import { errorCode, errorDetails, errorMessage } from "@/lib/error-message";
 import { findVisitante, registrarIngreso } from "@/lib/gate-client";
 import type { Aforo, IngresoInput, TipoVisita, Visita } from "@/lib/types";
 import { TIPOS_VISITA } from "@/lib/types";
+import { normalizarPlaca, PLACA_PATTERN } from "@/lib/formatos";
 
 const TIPO_LABELS: Record<TipoVisita, string> = {
   SOCIAL: "Social",
@@ -93,7 +101,7 @@ export function IngresoForm({
       numero: String(data.get("numero") || "").trim(),
       tipoVisita: String(data.get("tipoVisita")) as TipoVisita,
       conVehiculo,
-      placa: conVehiculo ? String(data.get("placa") || "").trim() || undefined : undefined,
+      placa: conVehiculo ? normalizarPlaca(String(data.get("placa") || "")) || undefined : undefined,
       cerrarVisitaAnterior: false,
     };
 
@@ -127,6 +135,8 @@ export function IngresoForm({
         autoFocus
         required
         maxLength={30}
+        pattern={DOCUMENT_PATTERN}
+        title="Entre 4 y 30 letras, dígitos o guiones."
         disabled={pending}
         onBlur={(event) => autocompletar(event.currentTarget.value)}
         onKeyDown={onDocumentoKeyDown}
@@ -138,13 +148,34 @@ export function IngresoForm({
         value={nombre}
         onChange={(event) => setNombre(event.currentTarget.value)}
         required
+        minLength={2}
         maxLength={150}
+        pattern={PERSON_NAME_PATTERN}
+        title="Solo letras, espacios, apóstrofos, puntos y guiones."
         disabled={pending}
         readOnly={nombreConocido}
       />
       <div className="gr-ingreso-fila">
-        <TextField id="torre" name="torre" label="Torre" required maxLength={20} disabled={pending} />
-        <TextField id="numero" name="numero" label="Apartamento" required maxLength={20} disabled={pending} />
+        <TextField
+          id="torre"
+          name="torre"
+          label="Torre"
+          required
+          maxLength={20}
+          pattern={UNIT_CODE_PATTERN}
+          title="Letras, dígitos o guiones."
+          disabled={pending}
+        />
+        <TextField
+          id="numero"
+          name="numero"
+          label="Apartamento"
+          required
+          maxLength={20}
+          pattern={UNIT_CODE_PATTERN}
+          title="Letras, dígitos o guiones."
+          disabled={pending}
+        />
       </div>
       <div className="gr-field">
         <label htmlFor="tipoVisita">Tipo de visita</label>
@@ -166,7 +197,16 @@ export function IngresoForm({
         Llega en vehículo
       </label>
       {conVehiculo && (
-        <TextField id="placa" name="placa" label="Placa" maxLength={10} disabled={pending} />
+        <TextField
+          id="placa"
+          name="placa"
+          label="Placa"
+          maxLength={10}
+          pattern={PLACA_PATTERN}
+          title="Placa colombiana: ABC123 (carro) o ABC12D (moto)."
+          autoCapitalize="characters"
+          disabled={pending}
+        />
       )}
 
       {error && <Feedback error>{error}</Feedback>}

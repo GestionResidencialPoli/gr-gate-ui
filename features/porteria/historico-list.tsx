@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Button, EmptyState, Skeleton, TextField } from "@gestionresidencial/shared-ui";
+import {
+  Button,
+  DOCUMENT_PATTERN,
+  EmptyState,
+  Skeleton,
+  TextField,
+  UNIT_CODE_PATTERN,
+} from "@gestionresidencial/shared-ui";
 import { listHistorico } from "@/lib/gate-client";
 import type { PageResult, Visita } from "@/lib/types";
 
@@ -47,9 +54,9 @@ function HistoricoWindow({
     onFiltrar({
       desde: String(data.get("desde") || "") || undefined,
       hasta: String(data.get("hasta") || "") || undefined,
-      torre: String(data.get("torre") || "") || undefined,
-      numero: String(data.get("numero") || "") || undefined,
-      documento: String(data.get("documento") || "") || undefined,
+      torre: String(data.get("torre") || "").trim() || undefined,
+      numero: String(data.get("numero") || "").trim() || undefined,
+      documento: String(data.get("documento") || "").trim() || undefined,
     });
   }
 
@@ -58,9 +65,33 @@ function HistoricoWindow({
       <form className="gr-form gr-reserva-filtros" onSubmit={aplicar}>
         <TextField id="desde" name="desde" label="Desde" type="date" defaultValue={filtros.desde} />
         <TextField id="hasta" name="hasta" label="Hasta" type="date" defaultValue={filtros.hasta} />
-        <TextField id="torre" name="torre" label="Torre" defaultValue={filtros.torre} />
-        <TextField id="numero" name="numero" label="Apartamento" defaultValue={filtros.numero} />
-        <TextField id="documento" name="documento" label="Documento" defaultValue={filtros.documento} />
+        <TextField
+          id="torre"
+          name="torre"
+          label="Torre"
+          maxLength={20}
+          pattern={UNIT_CODE_PATTERN}
+          title="Letras, dígitos o guiones."
+          defaultValue={filtros.torre}
+        />
+        <TextField
+          id="numero"
+          name="numero"
+          label="Apartamento"
+          maxLength={20}
+          pattern={UNIT_CODE_PATTERN}
+          title="Letras, dígitos o guiones."
+          defaultValue={filtros.numero}
+        />
+        <TextField
+          id="documento"
+          name="documento"
+          label="Documento"
+          maxLength={30}
+          pattern={DOCUMENT_PATTERN}
+          title="Entre 4 y 30 letras, dígitos o guiones."
+          defaultValue={filtros.documento}
+        />
         <div className="gr-form-actions">
           <Button type="submit">Filtrar</Button>
         </div>
