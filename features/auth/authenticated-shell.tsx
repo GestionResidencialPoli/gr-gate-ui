@@ -2,8 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { AppShell, Button, EmptyState, Feedback, Skeleton } from "@gestionresidencial/shared-ui";
-import { authUiLoginUrl, type Role } from "@gestionresidencial/auth-client";
+import { EmptyState, Feedback, PlatformShell, Skeleton } from "@gestionresidencial/shared-ui";
+import { authUiLoginUrl, openPlatformUrl, type Role } from "@gestionresidencial/auth-client";
 import { useAuth } from "./auth-provider";
 
 export function AuthenticatedShell({
@@ -17,7 +17,6 @@ export function AuthenticatedShell({
   const [pending, setPending] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
   const pathname = usePathname();
-  const isAdmin = user?.roles.includes("ADMINISTRACION") ?? false;
 
   useEffect(() => {
     if (!loading && !sessionError && !user) window.location.replace(authUiLoginUrl());
@@ -44,7 +43,7 @@ export function AuthenticatedShell({
     );
   }
 
-  if (sessionError) {
+  if (sessionError || !user) {
     return (
       <div className="standalone-state">
         <EmptyState
@@ -55,35 +54,24 @@ export function AuthenticatedShell({
     );
   }
 
-  const hasAccess = !requiredRole || user!.roles.includes(requiredRole);
-  const navigation = isAdmin
+  const hasAccess = !requiredRole || user.roles.includes(requiredRole);
+  const subNavigation = user.roles.includes("ADMINISTRACION")
     ? [
-        { id: "porteria", label: "Portería", href: "/" },
-        { id: "historial", label: "Histórico", href: "/admin/historial" },
-        { id: "cupos", label: "Cupos de parqueadero", href: "/admin/cupos" },
+        { id: "registro", label: "Registro de visitas", path: "/" },
+        { id: "historial", label: "Histórico", path: "/admin/historial" },
+        { id: "cupos", label: "Cupos de parqueadero", path: "/admin/cupos" },
       ]
-    : [{ id: "porteria", label: "Portería", href: "/" }];
-  const activeId = navigation.find((item) => item.href === pathname)?.id;
+    : [];
 
   return (
-    <AppShell
-      brand={{ name: "Habitar", description: "Portería", mark: "h.", href: "/" }}
-      navigation={navigation}
-      activeId={activeId}
-      user={{ name: user!.name, caption: "Mi cuenta" }}
-      userMenuItems={[]}
-      labels={{
-        navigation: "Portería",
-        menu: "Abrir navegación",
-        skip: "Saltar al contenido",
-        footer: "Control de acceso de visitantes",
-      }}
-      eyebrow="Portería"
-      actions={
-        <Button variant="ghost" disabled={pending} onClick={signOut}>
-          {pending ? "Cerrando sesión" : "Cerrar sesión"}
-        </Button>
-      }
+    <PlatformShell
+      app="gate"
+      pathname={pathname}
+      user={user}
+      subNavigation={subNavigation}
+      onOpenApp={(url) => void openPlatformUrl(user.roles, url)}
+      onLogout={signOut}
+      loggingOut={pending}
     >
       {logoutError && <Feedback error>No se pudo cerrar sesión. Inténtalo de nuevo.</Feedback>}
       {hasAccess ? (
@@ -94,6 +82,6 @@ export function AuthenticatedShell({
           description="Esta página es solo para el rol de administración."
         />
       )}
-    </AppShell>
+    </PlatformShell>
   );
 }
