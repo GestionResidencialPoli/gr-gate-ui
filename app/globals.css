@@ -163,3 +163,33 @@
     grid-template-columns: 1fr;
   }
 }
+
+.page-footer { flex-wrap: wrap; font-size: 12px; }
+.page-heading p { max-width: 70ch; }
+.gr-reserva-item { min-width: 0; }
+.gr-reserva-item > div { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.gr-reserva-filtros { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.gr-ingreso-fila { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) {
+ .gr-ingreso-fila { grid-template-columns: 1fr; }
+ .gr-reserva-item { flex-direction: column; align-items: stretch; }
+ .gr-reserva-item > .gr-button { width: 100%; }
+ .gr-reserva-item .gr-form-actions { width: 100%; }
+ .gr-wall-notification { flex-wrap: wrap; }
+ .section-title { flex-wrap: wrap; align-items: flex-start; }
+}
+
+.gr-aforo > div { flex-wrap: wrap; }
+.gr-aforo { position: relative; }
+.gr-checkbox { min-height: 44px; font-size: 16px; }
+.gr-checkbox input { width: 20px; height: 20px; flex-shrink: 0; }
+.gr-buscar-form { flex-wrap: wrap; }
+.gr-buscar-form .gr-field { flex: 1 1 180px; min-width: 0; }
+@media (min-width: 901px) and (max-width: 1200px) {
+ .gr-porteria-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+ .gr-aforo { gap: 8px 16px; padding: 16px; }
+ .gr-aforo-marca { flex-basis: 100%; margin-left: 0; }
+ .gr-buscar-form > .gr-button { width: 100%; }
+}
