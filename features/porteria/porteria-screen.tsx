@@ -12,6 +12,10 @@ export function PorteriaScreen() {
 
   return (
     <div className="gr-porteria">
+      <div className="page-heading">
+        <h1>Portería</h1>
+        <p>Registra ingresos y salidas y consulta las visitas que siguen en la unidad.</p>
+      </div>
       <AforoIndicator aforo={aforo} actualizadoEn={actualizadoEn} enVivo={enVivo} />
       <div className="gr-porteria-grid">
         <IngresoForm onRegistrado={() => setRefreshToken((current) => current + 1)} />
